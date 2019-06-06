@@ -1,0 +1,71 @@
+---
+title: "Untitled"
+author: "Ying Cai"
+date: "2019年5月20日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(xlsx)
+```
+
+```{r}
+
+
+
+```
+
+```{r}
+for(i in 1996:2018){
+   oname = paste("D:/UC/19S/trade strategy/CSV Files/ConferenceCall_", i,sep = "")
+   pname=paste("c",i,sep="")
+   assign(pname, read_csv(paste(oname, ".csv",sep="")))
+}
+return<-read_csv("D:/UC/19S/trade strategy/Date_Ticker_MonthlyReturn.csv")
+return1<-filter(return,!is.na(RET)&RET!="B")
+write_csv(return1,"D:/UC/19S/trade strategy/cleanreturn.csv")
+```
+
+```{r}
+c1<-read_csv("D:/UC/19S/trade strategy/CSV Files/ConferenceCall_1996.csv")
+
+c2<-read_csv("D:/UC/19S/trade strategy/Ticker Indexed Earning Call Transcripts-20190527T043124Z-001/Ticker Indexed Earning Call Transcripts/Ticker_ConferenceCall_1997.csv")
+
+c3<-read_csv("D:/UC/19S/trade strategy/Ticker Indexed Earning Call Transcripts-20190527T043124Z-001/Ticker Indexed Earning Call Transcripts/Ticker_ConferenceCall_2015.csv")
+
+c4<-read_csv("D:/UC/19S/trade strategy/Ticker Indexed Earning Call Transcripts-20190527T043124Z-001/Ticker Indexed Earning Call Transcripts/Ticker_ConferenceCall_2016.csv")
+
+c67<-read_csv("D:/UC/19S/trade strategy/Ticker Indexed Earning Call Transcripts-20190527T043124Z-001/Ticker Indexed Earning Call Transcripts/Ticker_ConferenceCall_2014.csv")
+
+
+combine1<-c1996%>%group_by(CIK,`Year-Month`)%>%summarise(`COMPANYNAME`=first(`COMPANY NAME`),SIC=first(SIC),`SICNAME`=first(`SIC NAME`),`CONFERENCE.CALLDATE`=first(`CONFERENCE CALL DATE`),N_SPEAKER=length(unique(SPEAKER)),DESIGNATION=first(DESIGNATION),TEXT=paste(TEXT,collapse =" "))%>%mutate(year=str_sub(`Year-Month`,1,4),mon=str_sub(`Year-Month`,5,6))%>%as.data.frame()
+
+#write_delim(combine, delim ="\t", "D:/UC/test.tsv")
+#tick<-c67%>%group_by(Ticker)%>%summarise(CIK=first(CIK))
+#combine<-left_join(combine,tick,by="CIK")
+combine2<-c2018%>%group_by(CIK,`Year-Month`)%>%summarise(`COMPANYNAME`=first(`COMPANY NAME`),SIC=first(SIC),`SICNAME`=first(`SIC NAME`),`CONFERENCE.CALLDATE`=first(`CONFERENCE CALL DATE`),N_SPEAKER=length(unique(SPEAKER)),DESIGNATION=first(DESIGNATION),TEXT=paste(TEXT,collapse =" "))%>%mutate(year=str_sub(`Year-Month`,1,4),mon=str_sub(`Year-Month`,5,6))%>%as.data.frame()
+
+#c2017<-read_csv("D:/UC/19S/trade strategy/CSV Files/ConferenceCall_2017.csv")
+
+whole<-rbind(whole,combine2)
+wholec<-filter(whole,!is.na(CIK))
+wholec<-filter(wholec,TEXT!="NA")
+wholec<-filter(wholec,year<=2018&year>=1996)
+#wholes<-whole[1:13927,]
+write_delim(wholecj,"D:/UC/19S/trade strategy/cleantranscript.tsv",delim="\t")
+write_rds(wholec,"D:/UC/19S/trade strategy/wholeclean.rds")
+
+CIK<-read_csv("D:/UC/19S/trade strategy/CIK.csv")
+cik<-summarise(group_by(CIK,CIK),Ticker=first(Ticker))
+wholecj<-left_join(wholec,cik,by="CIK")
+cik<-mutate(cik,CIK=as.character(CIK))
+
+wholec<-read_
+```
+
